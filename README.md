@@ -314,7 +314,8 @@ class JsonFileResourceRepository(ResourceRepository):
         self._path.write_text(json.dumps(to_disk))
 ```
 
-And adding a integration test for this class since this treats paths.
+And adding a integration test for this class since this treats paths, and also test that the
+serialization and deserialization of the Json files works.
 
 ```python
 # tests/integration/test_json_file_resources.py
@@ -326,7 +327,6 @@ import pytest
 from resources.infrastructure.repositories.json_file_resources import (
     JsonFileResourceRepository,
 )
-from resources.application.repositories.resources import ResourceRepository
 from resources.application.use_cases.updating_name import UpdateName, UpdatingName
 
 
@@ -351,4 +351,43 @@ def test_updating_name_succeeds(resource_id: UUID):
     resource = repo_copy.get(resource_id)
 
     assert resource.name == "Lexicon Royale"
+```
+
+We could also use `sqlalchemy` for using a SQL repo.
+
+## Next steps
+
+### Queries
+
+Sometimes the domain objects are big and need a lot of validation when working with, but for reading that validation is not needed. So we can define an interface for a specific query:
+
+```python
+# resources/application/queries/resources.py
+
+import abc
+
+class ListResources(abc.ABC):
+    @abc.abstractmethod
+    def query(self) -> list[dict[str, str]]:
+        ...
+```
+
+and implement it for our Json file:
+
+```python
+# resources/infrastructure/queries/json_file_resources.py
+import json
+from pathlib import Path
+
+from resources.application.queries.resources import ListResources
+
+
+class JsonFileListResources(ListResources):
+    def __init__(self, path: Path) -> None:
+        self._path = path
+
+    def query(self) -> list[dict[str, str]]:
+        return [
+            res | {"id": id} for id, res in json.loads(self._path.read_text()).items()
+        ]
 ```

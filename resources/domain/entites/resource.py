@@ -6,13 +6,6 @@ class ResourceType(str, enum.Enum):
     Corpus = "corpus"
     Lexicon = "lexicon"
 
-    @classmethod
-    def from_str(cls, value: str) -> "ResourceType":
-        for v in ResourceType:
-            if v.value == value:
-                return v
-        raise ValueError(f"Unknown ResourceType (got '{value}')")
-
 
 class Resource:
     def __init__(
