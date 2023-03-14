@@ -5,7 +5,23 @@ E.g. if the software handles auctions, the model should contain a class `Auction
 
 Another point is to keep the domain clean without dependencies of the system.
 
-We are going to implement a system talking about resources, so our first code is:
+We are going to implement a system talking about resources, so our first code is a test for how we represent a resource:
+
+```python
+# tests/unit/domain/test_resource.py
+import uuid
+
+from resources.domain.entites.resource import Resource, ResourceType
+
+
+def test_can_create_resource():
+    resource = Resource(id=uuid.uuid4(), name="Lexicon Rex", type="lexicon")
+
+    assert resource.type == ResourceType.Lexicon
+    assert resource.name == "Lexicon Rex"
+```
+
+and here is some code that makes the test pass:
 
 ```python
 # file: resources/domain/entities/resource.py
@@ -44,20 +60,7 @@ class Resource:
 
 ```
 
-and we can test this with:
-```python
-# tests/unit/domain/test_resource.py
-import uuid
 
-from resources.domain.entites.resource import Resource, ResourceType
-
-
-def test_can_create_resource():
-    resource = Resource(id=uuid.uuid4(), name="Lexicon Rex", type="lexicon")
-
-    assert resource.type == ResourceType.Lexicon
-    assert resource.name == "Lexicon Rex"
-```
 
 ## Use case 1: Update name
 
@@ -75,7 +78,7 @@ that layer `application`.
 So we can write a test for our use case `UpdatingName` like this:
 
 ```python
-# tests/unit/application/test_resource.py
+# tests/unit/application/test_updating_name.py
 import pytest
 
 from resources.application.use_cases.updating_name import UpdateName, UpdatingName
@@ -87,11 +90,11 @@ def repo():
 
 
 @pytest.fixture()
-def resource_id():
+def resource_id() -> UUID:
     raise NotImplementedError("?")
 
 
-def test_updating_name_succeeds(repo, resource_id):
+def test_updating_name_succeeds(repo, resource_id: UUID):
     uc = UpdatingName(repo)
 
     input_dto = UpdateName(
