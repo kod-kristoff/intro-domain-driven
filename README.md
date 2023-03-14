@@ -391,3 +391,7 @@ class JsonFileListResources(ListResources):
             res | {"id": id} for id, res in json.loads(self._path.read_text()).items()
         ]
 ```
+
+### Events
+
+You can define Domain Events that a domain entity emit when some has happened, for instance our method `set_name` could emit a event `ResourceNameChanged` if the name is changed.
