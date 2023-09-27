@@ -1,3 +1,4 @@
+This repository is archived and moved [here](https://github.com/spraakbanken/dev-tutorials)
 # Introduction to Domain-Driven Development
 
 The idea is to model the domain based on the domain language, so that developers and non-developers can talk about the model.

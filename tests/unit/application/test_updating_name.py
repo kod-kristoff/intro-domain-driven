@@ -16,7 +16,7 @@ def repo():
 
 
 @pytest.fixture()
-def resource_id():
+def resource_id() -> UUID:
     return UUID("18cc403e-a0a4-4a93-9123-4720c34fe005")
 
 
